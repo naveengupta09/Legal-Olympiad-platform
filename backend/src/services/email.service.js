@@ -1,26 +1,22 @@
-const nodemailer = require("nodemailer");
+const Brevo = require("@getbrevo/brevo");
+const { ENV } = require("../config/env");
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const client = Brevo.ApiClient.instance;
+client.authentications["api-key"].apiKey = ENV.BREVO_API_KEY;
+
+const api = new Brevo.TransactionalEmailsApi();
 
 const send = async ({ to, subject, html }) => {
-  await transporter.sendMail({
-    from: `"Legal Olympiad" <${process.env.EMAIL_FROM}>`,
-    to,
-    subject,
-    html,
-  });
+  const email = new Brevo.SendSmtpEmail();
+  email.sender = { name: "Legal Olympiad", email: ENV.EMAIL_FROM };
+  email.to = [{ email: to }];
+  email.subject = subject;
+  email.htmlContent = html;
+  await api.sendTransacEmail(email);
 };
 
 const sendVerificationEmail = async (email, name, token) => {
-  const url = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+  const url = `${ENV.CLIENT_URL}/verify-email?token=${token}`;
   await send({
     to: email,
     subject: "Verify your Legal Olympiad account",
@@ -37,7 +33,7 @@ const sendVerificationEmail = async (email, name, token) => {
 };
 
 const sendPasswordResetEmail = async (email, name, token) => {
-  const url = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+  const url = `${ENV.CLIENT_URL}/reset-password?token=${token}`;
   await send({
     to: email,
     subject: "Reset your Legal Olympiad password",

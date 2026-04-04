@@ -6,20 +6,21 @@ const mongoSanitize = require("express-mongo-sanitize");
 
 const routes = require("./routes/index");
 const { errorHandler, notFound } = require("./middleware/error.middleware");
+const { ENV } = require("./config/env");
 
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 
-if (process.env.NODE_ENV === "development") {
+if (ENV.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-app.use("/api/v1", routes);
+app.use("/api", routes);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -1,3 +1,4 @@
+const { ENV } = require("../config/env");
 const authService = require("../services/auth.service");
 const ApiResponse = require("../utils/ApiResponse");
 const asyncHandler = require("../utils/asyncHandler");
@@ -11,7 +12,7 @@ const register = asyncHandler(async (req, res) => {
     .status(201)
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: ENV.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     })
@@ -24,7 +25,7 @@ const login = asyncHandler(async (req, res) => {
   res
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: ENV.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     })

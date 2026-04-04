@@ -1,3 +1,4 @@
+const { ENV } = require("../config/env");
 const ApiError = require("../utils/ApiError");
 
 const notFound = (req, res, next) => {
@@ -35,7 +36,7 @@ const errorHandler = (err, req, res, next) => {
     success: false,
     message: error.message,
     errors: error.errors,
-    ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
+    ...(ENV.NODE_ENV === "development" && { stack: error.stack }),
   });
 };
 
