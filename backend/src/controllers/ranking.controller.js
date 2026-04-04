@@ -14,12 +14,12 @@ const getCollegeLeaderboard = asyncHandler(async (req, res) => {
 
 const getMyRanking = asyncHandler(async (req, res) => {
   const ranking = await rankingService.getUserRanking(req.user._id, req.query.period);
-  res.json(new ApiResponse(200, ranking, "Your ranking fetched"));
+  res.json(new ApiResponse(200, ranking, ranking ? "Your ranking fetched" : "Ranking not available yet"));
 });
 
 const getUserRanking = asyncHandler(async (req, res) => {
   const ranking = await rankingService.getUserRanking(req.params.userId, req.query.period);
-  res.json(new ApiResponse(200, ranking, "Ranking fetched"));
+  res.json(new ApiResponse(200, ranking, ranking ? "Ranking fetched" : "Ranking not available yet"));
 });
 
 const triggerRecompute = asyncHandler(async (req, res) => {

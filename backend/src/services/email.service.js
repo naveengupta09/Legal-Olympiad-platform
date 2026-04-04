@@ -1,18 +1,17 @@
-const Brevo = require("@getbrevo/brevo");
+const { BrevoClient } = require("@getbrevo/brevo");
 const { ENV } = require("../config/env");
 
-const client = Brevo.ApiClient.instance;
-client.authentications["api-key"].apiKey = ENV.BREVO_API_KEY;
-
-const api = new Brevo.TransactionalEmailsApi();
+const brevo = new BrevoClient({
+  apiKey: ENV.BREVO_API_KEY,
+});
 
 const send = async ({ to, subject, html }) => {
-  const email = new Brevo.SendSmtpEmail();
-  email.sender = { name: "Legal Olympiad", email: ENV.EMAIL_FROM };
-  email.to = [{ email: to }];
-  email.subject = subject;
-  email.htmlContent = html;
-  await api.sendTransacEmail(email);
+  await brevo.transactionalEmails.sendTransacEmail({
+    sender: { name: "Legal Olympiad", email: ENV.EMAIL_FROM },
+    to: [{ email: to }],
+    subject,
+    htmlContent: html,
+  });
 };
 
 const sendVerificationEmail = async (email, name, token) => {

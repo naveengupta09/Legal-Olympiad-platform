@@ -1,12 +1,14 @@
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useColleges } from "@/hooks/useColleges";
 import { useAuthStore } from "@/store/authStore";
 
 const schema = z.object({
@@ -14,20 +16,47 @@ const schema = z.object({
   email:    z.string().email("Enter a valid email"),
   password: z.string().min(8, "Minimum 8 characters").regex(/[A-Z]/, "One uppercase required").regex(/[0-9]/, "One number required"),
   role:     z.enum(["student", "college_admin"]),
+  college:  z.string().optional(),
+}).superRefine((values, context) => {
+  if (values.role === "college_admin" && !values.college) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["college"],
+      message: "Select your college for a college admin account",
+    });
+  }
 });
 
 export default function RegisterPage() {
   const { register: registerUser, isLoading } = useAuthStore();
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
+  const { data: collegesData, isLoading: collegesLoading } = useColleges({ limit: 100 });
 
-  const { register, handleSubmit, setError, formState: { errors } } = useForm({
+  const { register, handleSubmit, setError, watch, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
     defaultValues: { role: "student" },
   });
 
+  const role = watch("role");
+  const colleges = Array.isArray(collegesData?.data) ? collegesData.data : [];
+
+  useEffect(() => {
+    if (role !== "college_admin") {
+      setValue("college", undefined, { shouldValidate: true, shouldDirty: true });
+    }
+  }, [role, setValue]);
+
   const onSubmit = async (data) => {
-    const result = await registerUser(data);
+    const payload = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+      ...(data.role === "college_admin" && data.college ? { college: data.college } : {}),
+    };
+
+    const result = await registerUser(payload);
     if (result.success) navigate("/dashboard");
     else setError("root", { message: result.message });
   };
@@ -83,6 +112,25 @@ export default function RegisterPage() {
             ))}
           </div>
         </div>
+
+        {role === "college_admin" && (
+          <div className="space-y-2">
+            <Label htmlFor="college">College</Label>
+            <Select onValueChange={(value) => setValue("college", value, { shouldValidate: true })}>
+              <SelectTrigger id="college" className="w-full">
+                <SelectValue placeholder={collegesLoading ? "Loading colleges…" : "Select your college"} />
+              </SelectTrigger>
+              <SelectContent>
+                {colleges.map((college) => (
+                  <SelectItem key={college._id} value={college._id}>
+                    {college.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.college && <p className="text-xs text-destructive">{errors.college.message}</p>}
+          </div>
+        )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? <><Loader2 className="w-4 h-4 animate-spin" />Creating account…</> : "Create account"}

@@ -1,7 +1,6 @@
 const Ranking = require("../models/Ranking.model");
 const User = require("../models/User.model");
 const College = require("../models/College.model");
-const ApiError = require("../utils/ApiError");
 const { getCache, setCache } = require("../config/redis");
 const { recomputeStudentRankings, recomputeCollegeRankings } = require("../utils/rankingEngine");
 const { RANKING_PERIODS } = require("../config/constants");
@@ -79,7 +78,6 @@ const getCollegeLeaderboard = async ({ page = 1, limit = 20, period = RANKING_PE
 const getUserRanking = async (userId, period = RANKING_PERIODS.ALL_TIME) => {
   const ranking = await Ranking.findOne({ entity: userId, entityType: "student", period })
     .populate("entity", "name avatar totalScore");
-  if (!ranking) throw new ApiError(404, "Ranking not found for this user");
   return ranking;
 };
 
