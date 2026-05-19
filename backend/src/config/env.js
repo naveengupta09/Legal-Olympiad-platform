@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 dotenv.config();
 
 function required(name) {
@@ -13,7 +13,7 @@ function optional(name, defaultValue) {
   return process.env[name] || defaultValue;
 }
 
-export const ENV = {
+const ENV = {
   PORT: optional("PORT", 5000),
   CLIENT_URL: optional("CLIENT_URL", "http://localhost:5173"),
   NODE_ENV: optional("NODE_ENV", "development"),
@@ -21,7 +21,7 @@ export const ENV = {
   appName: optional("appName", "legal-olympiad"),
   REDIS_HOST: required("REDIS_HOST"),
   REDIS_PORT: required("REDIS_PORT"),
-  REDIS_PASSWORD: required("REDIS_PASSWORD"),
+  REDIS_PASSWORD: optional("REDIS_PASSWORD", ""),
   BREVO_API_KEY: required("BREVO_API_KEY"),
   EMAIL_FROM: required("EMAIL_FROM"),
   CLOUDINARY_CLOUD_NAME: required("CLOUDINARY_CLOUD_NAME"),
@@ -31,3 +31,5 @@ export const ENV = {
   JWT_REFRESH_SECRET: required("JWT_REFRESH_SECRET"),
   JWT_EXPIRES_IN: required("JWT_EXPIRES_IN"),
 };
+
+module.exports = { ENV };

@@ -29,10 +29,10 @@ export default function DashboardPage() {
   const { data: coursesRes } = useCourses({ limit: 4 });
   const { data: compsRes } = useCompetitions({ status: "registration_open", limit: 4 });
 
-  const ranking = rankRes?.data;
-  const notifications = notifRes?.data?.data || [];
-  const courses = coursesRes?.data?.data || [];
-  const competitions = compsRes?.data?.data || [];
+  const ranking = rankRes;
+  const notifications = notifRes?.data || [];
+  const courses = coursesRes?.data || [];
+  const competitions = compsRes?.data || [];
   const initials = user?.name?.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
 
   return (

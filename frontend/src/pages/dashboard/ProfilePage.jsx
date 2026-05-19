@@ -48,7 +48,7 @@ export default function ProfilePage() {
         name: data.name, phone: data.phone, bio: data.bio,
         socialLinks: { linkedin: data["socialLinks.linkedin"], twitter: data["socialLinks.twitter"] },
       });
-      updateUser(res.data);
+      updateUser(res.data.data);
       toast.success("Profile updated!");
     } catch { toast.error("Failed to update"); } finally { setSaving(false); }
   };
@@ -60,7 +60,7 @@ export default function ProfilePage() {
     try {
       const fd = new FormData(); fd.append("avatar", file);
       const res = await userApi.updateAvatar(fd);
-      updateUser({ avatar: res.data.avatar });
+      updateUser({ avatar: res.data.data.avatar });
       toast.success("Avatar updated!");
     } catch { toast.error("Failed to upload"); } finally { setUploading(false); }
   };

@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
 const passport = require("./config/passport");
 
@@ -12,6 +13,7 @@ const { ENV } = require("./config/env");
 const app = express();
 
 app.use(helmet());
+app.use(cookieParser());
 app.use(cors({ origin: [
   ENV.CLIENT_URL, 
   "https://legal-olympiad.vercel.app",

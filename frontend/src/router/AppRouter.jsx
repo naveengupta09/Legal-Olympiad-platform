@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import RootLayout from "@/components/layout/RootLayout";
-import AuthLayout from "@/components/layout/AuthLayout";
+import RootLayout from "@/component/layout/RootLayout";
+import AuthLayout from "@/component/layout/AuthLayout";
 import { useAuthStore } from "@/store/authStore";
 
 import HomePage from "@/pages/HomePage";
@@ -10,15 +10,15 @@ import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import ProfilePage from "@/pages/dashboard/ProfilePage";
 import CompetitionsPage from "@/pages/competitions/CompetitionsPage";
-import CompetitionDetailPage from "@/pages/competitions/CompetitionDetailPage";
-import RankingsPage from "@/pages/rankings/RankingsPage";
-import WebinarsPage from "@/pages/webinars/WebinarsPage";
-import WebinarDetailPage from "@/pages/webinars/WebinarDetailPage";
-import CoursesPage from "@/pages/courses/CoursesPage";
-import CourseDetailPage from "@/pages/courses/CourseDetailPage";
-import PodcastsPage from "@/pages/podcasts/PodcastsPage";
+import CompetitionDetailPage from "@/pages/competitions/CompetitionDetailsPage";
+import RankingsPage from "@/pages/competitions/RankingsPage";
+import WebinarsPage from "@/pages/competitions/WebinarsPage";
+import WebinarDetailPage from "@/pages/competitions/WebinarDetailsPage";
+import CoursesPage from "@/pages/competitions/CoursesPage";
+import CourseDetailPage from "@/pages/competitions/CoursesDetailsPage";
+import PodcastsPage from "@/pages/competitions/PoadcastPage";
 import CollegesPage from "@/pages/colleges/CollegesPage";
-import BlogsPage from "@/pages/content/BlogsPage";
+import BlogsPage from "@/pages/content/BlogPage";
 import BlogDetailPage from "@/pages/content/BlogDetailPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 

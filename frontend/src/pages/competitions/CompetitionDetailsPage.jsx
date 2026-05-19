@@ -18,11 +18,9 @@ const STATUS_COLORS = {
 
 export default function CompetitionDetailPage() {
   const { id } = useParams();
-  const { data: res, isLoading } = useCompetition(id);
+  const { data: comp, isLoading } = useCompetition(id);
   const { mutate: register, isPending } = useRegisterCompetition();
   const { user, isLoggedIn } = useAuthStore();
-
-  const comp = res?.data;
 
   if (isLoading) return (
     <div className="container py-12 space-y-6">

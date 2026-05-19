@@ -31,10 +31,8 @@ function ArticleSkeleton() {
 export default function BlogDetailPage() {
   const { slug }             = useParams();
   const { user, isLoggedIn } = useAuthStore();
-  const { data: res, isLoading } = useContentBySlug(slug);
+  const { data: post, isLoading } = useContentBySlug(slug);
   const { mutate: toggleLike, isPending: liking } = useToggleLike();
-
-  const post = res?.data;
 
   const handleLike = () => {
     if (!isLoggedIn()) { toast.error("Log in to like articles"); return; }

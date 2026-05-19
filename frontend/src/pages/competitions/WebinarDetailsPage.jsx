@@ -12,10 +12,9 @@ import { formatDate, formatDateTime, formatDuration } from "@/utils/formatDate";
 
 export default function WebinarDetailPage() {
   const { id } = useParams();
-  const { data: res, isLoading } = useWebinar(id);
+  const { data: w, isLoading } = useWebinar(id);
   const { mutate: register, isPending } = useRegisterWebinar();
   const { user, isLoggedIn } = useAuthStore();
-  const w = res?.data;
 
   if (isLoading) return <div className="container py-12"><Skeleton className="h-96 w-full" /></div>;
   if (!w) return <div className="container py-24 text-center text-muted-foreground">Webinar not found.</div>;

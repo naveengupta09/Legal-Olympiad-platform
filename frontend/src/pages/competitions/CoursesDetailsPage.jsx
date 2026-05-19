@@ -14,11 +14,10 @@ import { formatDuration } from "@/utils/formatDate";
 
 export default function CourseDetailPage() {
   const { id } = useParams();
-  const { data: res, isLoading } = useCourse(id);
+  const { data: c, isLoading } = useCourse(id);
   const { mutate: enroll, isPending } = useEnrollCourse();
   const { user, isLoggedIn } = useAuthStore();
   const [expandedModule, setExpandedModule] = useState(0);
-  const c = res?.data;
 
   if (isLoading) return <div className="container py-12"><Skeleton className="h-96 w-full" /></div>;
   if (!c) return <div className="container py-24 text-center text-muted-foreground">Course not found.</div>;
