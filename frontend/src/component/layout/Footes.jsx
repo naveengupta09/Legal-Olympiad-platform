@@ -30,14 +30,14 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-muted/30 mt-20">
+    <footer className="border-t border-border/60 bg-muted/40 mt-20 backdrop-blur-sm">
       <div className="container py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-                <Scale className="w-4 h-4 text-white" />
+              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/20">
+                <Scale className="w-4 h-4 text-primary-foreground" />
               </div>
               <span className="font-display text-2xl font-bold">Legal Olympiad</span>
             </Link>

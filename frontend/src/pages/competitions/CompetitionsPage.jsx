@@ -43,11 +43,11 @@ export default function CompetitionsPage() {
   return (
     <div className="container py-12 space-y-8">
       {/* Header */}
-      <div className="space-y-2">
+      <header className="page-header">
         <p className="section-label">Compete & Grow</p>
-        <h1 className="font-display text-4xl font-bold">Competitions</h1>
-        <p className="text-muted-foreground">Moot courts, quizzes, essays, debates — find your arena.</p>
-      </div>
+        <h1>Competitions</h1>
+        <p>Moot courts, quizzes, essays, debates — find your arena.</p>
+      </header>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">

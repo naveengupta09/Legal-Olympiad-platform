@@ -72,7 +72,7 @@ export default function ProfilePage() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Left: avatar + stats */}
         <div className="space-y-4">
-          <Card className="p-6 text-center space-y-4">
+          <Card className="p-6 text-center space-y-4 shadow-md border-border/60">
             <div className="relative inline-block">
               <Avatar className="w-24 h-24 ring-4 ring-primary/20">
                 <AvatarImage src={user?.avatar} />
@@ -112,7 +112,7 @@ export default function ProfilePage() {
 
         {/* Right: edit form */}
         <div className="lg:col-span-2">
-          <Card>
+          <Card className="shadow-md border-border/60">
             <CardHeader><CardTitle>Edit profile</CardTitle></CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

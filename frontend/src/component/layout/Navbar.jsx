@@ -29,14 +29,16 @@ export default function Navbar() {
   const initials = user?.name?.split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase() || "U";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/85 backdrop-blur-xl shadow-sm shadow-primary/5 supports-[backdrop-filter]:bg-background/70">
       <div className="container flex h-16 items-center justify-between gap-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <Scale className="w-4 h-4 text-white" />
+        <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/25 ring-1 ring-primary/20 transition-transform group-hover:scale-105">
+            <Scale className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-display text-xl font-bold hidden sm:block">Legal Olympiad</span>
+          <span className="font-display text-xl hidden sm:block tracking-tight">
+            Legal <span className="text-gradient-gold italic">Olympiad</span>
+          </span>
         </Link>
 
         {/* Desktop nav */}
@@ -45,7 +47,7 @@ export default function Navbar() {
             <NavLink key={to} to={to}
               className={({ isActive }) => cn(
                 "px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                isActive ? "text-primary bg-primary/8" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                isActive ? "text-primary bg-primary/10 font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-muted/80"
               )}>
               {label}
             </NavLink>

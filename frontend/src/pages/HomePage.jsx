@@ -16,12 +16,12 @@ import { cn } from "@/lib/utils";
 function Hero({ stats }) {
   const { isLoggedIn } = useAuthStore();
   return (
-    <section className="relative overflow-hidden bg-background">
-      {/* Background pattern */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute inset-0 opacity-[.03]"
-          style={{ backgroundImage: "radial-gradient(circle,#000 1px,transparent 1px)", backgroundSize: "32px 32px" }} />
+    <section className="relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-hero-mesh">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-amber-400/10 blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "radial-gradient(circle,currentColor 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
       </div>
 
       <div className="container py-24 lg:py-36">
@@ -30,9 +30,9 @@ function Hero({ stats }) {
             <Star className="w-3 h-3 fill-primary" /> India's #1 Legal Learning Platform
           </Badge>
 
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-[1.05]">
+          <h1 className="font-display text-5xl sm:text-6xl lg:text-[4.5rem] text-foreground leading-[1.05]">
             Compete. Learn.{" "}
-            <span className="text-primary italic">Excel.</span>
+            <span className="text-gradient-gold italic">Excel.</span>
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
