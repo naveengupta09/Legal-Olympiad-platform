@@ -367,113 +367,6 @@ function NewsSection({ news }) {
   );
 }
 
-function PlatformUpdatesSection({ updates }) {
-  if (!updates?.length) return null;
-
-  return (
-    <section className="container py-16">
-      <SectionHeader
-        label="Platform Pulse"
-        title="Latest Platform Updates"
-        subtitle="New releases, announcements, and important platform improvements"
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {updates.map((update) => (
-          <Link key={update._id} to={update.slug ? `/blogs/${update.slug}` : "/blogs"}>
-            <Card className="h-full card-hover p-5 border-primary/10 bg-gradient-to-br from-primary/[0.04] to-transparent">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-3">
-                  <Badge variant="outline" className="text-[10px] uppercase tracking-wide">Update</Badge>
-                  <span className="text-xs text-muted-foreground">{formatRelative(update.publishedAt)}</span>
-                </div>
-                <h3 className="font-semibold text-base line-clamp-2 leading-snug hover:text-primary transition-colors">{update.title}</h3>
-                {update.excerpt && <p className="text-sm text-muted-foreground line-clamp-2">{update.excerpt}</p>}
-              </div>
-            </Card>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ParticipationHighlightsSection({ participants, stats }) {
-  const newStudents = participants?.newStudents || [];
-  const newColleges = participants?.newColleges || [];
-
-  if (!newStudents.length && !newColleges.length) return null;
-
-  return (
-    <section className="container py-16">
-      <SectionHeader
-        label="Community Growth"
-        title="New Student & College Participation"
-        subtitle="Recent members and institutions joining Legal Olympiad"
-      />
-
-      <div className="grid lg:grid-cols-3 gap-5">
-        <Card className="lg:col-span-1 p-6 space-y-4 bg-gradient-to-br from-primary/10 to-transparent border-primary/20">
-          <p className="text-xs font-semibold tracking-[0.14em] uppercase text-primary">Participation Snapshot</p>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground flex items-center gap-2"><Users className="w-4 h-4" />Active students</span>
-              <span className="font-display text-xl font-semibold">{stats?.totalStudents || 0}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground flex items-center gap-2"><Building2 className="w-4 h-4" />Partner colleges</span>
-              <span className="font-display text-xl font-semibold">{stats?.totalColleges || 0}</span>
-            </div>
-          </div>
-          <Button asChild className="w-full rounded-xl">
-            <Link to="/register">Join the platform <ArrowRight className="w-4 h-4" /></Link>
-          </Button>
-        </Card>
-
-        <Card className="lg:col-span-1 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-display text-xl font-semibold">New Students</h3>
-            <Badge variant="secondary" className="text-[10px]">{newStudents.length}</Badge>
-          </div>
-          <div className="space-y-3">
-            {newStudents.slice(0, 5).map((student) => (
-              <div key={student._id} className="flex items-center gap-3 rounded-xl border border-border/70 px-3 py-2.5">
-                <Avatar className="w-9 h-9">
-                  <AvatarImage src={student.avatar} />
-                  <AvatarFallback className="text-xs">{student.name?.[0]}</AvatarFallback>
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium line-clamp-1">{student.name}</p>
-                  <p className="text-xs text-muted-foreground line-clamp-1">{student.college?.name || "Independent"}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="lg:col-span-1 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-display text-xl font-semibold">New Colleges</h3>
-            <Badge variant="secondary" className="text-[10px]">{newColleges.length}</Badge>
-          </div>
-          <div className="space-y-3">
-            {newColleges.slice(0, 5).map((college) => (
-              <div key={college._id} className="flex items-center gap-3 rounded-xl border border-border/70 px-3 py-2.5">
-                <div className="w-9 h-9 rounded-lg bg-muted overflow-hidden flex items-center justify-center shrink-0">
-                  {college.logo ? <img src={college.logo} alt={college.name} className="w-full h-full object-cover" /> : <Building2 className="w-4 h-4 text-muted-foreground" />}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium line-clamp-1">{college.name}</p>
-                  <p className="text-xs text-muted-foreground line-clamp-1">{college.location?.city || "Unknown city"}, {college.location?.state || "Unknown state"}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-    </section>
-  );
-}
-
 // ─── CTA Banner ────────────────────────────────────────────────────────────────
 function CTABanner() {
   const { isLoggedIn } = useAuthStore();
@@ -604,13 +497,6 @@ export default function HomePage() {
         <NewsSection news={latestNews} />
       )}
 
-      {/* Platform updates */}
-      {isLoading ? (
-        <section className="container py-16"><Skeleton className="h-60 w-full" /></section>
-      ) : (
-        <PlatformUpdatesSection updates={latestUpdates} />
-      )}
-
       {/* Blogs */}
       <section className="container py-16">
         <SectionHeader label="From the community" title="Featured Articles" href="/blogs" />
@@ -643,11 +529,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Participation highlights */}
-      {isLoading ? (
-        <section className="container py-16"><Skeleton className="h-72 w-full" /></section>
-      ) : (
-        <ParticipationHighlightsSection participants={recentParticipants} stats={stats} />
+      {/* New participants */}
+      {recentParticipants?.newStudents?.length > 0 && (
+        <section className="container py-16">
+          <SectionHeader label="Welcome" title="New Members" subtitle="Recently joined the platform" />
+          <div className="flex flex-wrap gap-4">
+            {recentParticipants.newStudents.map(s => (
+              <div key={s._id} className="flex items-center gap-2.5 bg-card border border-border rounded-xl px-4 py-3 hover:border-primary/50 transition-colors">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={s.avatar} />
+                  <AvatarFallback className="text-xs">{s.name?.[0]}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium">{s.name}</p>
+                  <p className="text-xs text-muted-foreground">{s.college?.name || "Student"}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* CTA */}

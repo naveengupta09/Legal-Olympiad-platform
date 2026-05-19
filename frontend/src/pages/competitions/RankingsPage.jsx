@@ -87,16 +87,8 @@ export default function RankingsPage() {
   const { data: studentsData, isLoading: studentsLoading } = useStudentLeaderboard({ period, page, limit: 20 });
   const { data: collegesData, isLoading: collegesLoading } = useCollegeLeaderboard({ period, page, limit: 20 });
 
-  const students = Array.isArray(studentsData?.data)
-    ? studentsData.data
-    : Array.isArray(studentsData?.data?.data)
-      ? studentsData.data.data
-      : [];
-  const colleges = Array.isArray(collegesData?.data)
-    ? collegesData.data
-    : Array.isArray(collegesData?.data?.data)
-      ? collegesData.data.data
-      : [];
+  const students = studentsData?.data || [];
+  const colleges = collegesData?.data || [];
 
   return (
     <div className="container py-12 space-y-8">

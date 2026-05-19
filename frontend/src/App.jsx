@@ -1,46 +1,77 @@
-import { useEffect, Suspense } from "react";
-import AppRouter from "./router/AppRouter";
-import { useAuthStore } from "./store/authStore";
-import { useUiStore } from "./store/uiStore";
-import { useNotificationStore } from "./store/notificationStore";
-import { useSocketInit } from "./hooks/useSocket";
-import ScrollToTop from "./components/shared/ScrollToTop";
-import PageLoader from "./components/shared/PageLoader";
-import ErrorBoundary from "./components/shared/ErrorBoundary";
+import { useState } from "react"
 
-function SocketProvider() {
-  useSocketInit(); // connects socket when user is logged in
-  return null;
-}
+// shadcn components
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+import { Switch } from "@/components/ui/switch"
 
-export default function App() {
-  const { hydrate, user } = useAuthStore();
-  const { theme } = useUiStore();
-  const { fetchUnreadCount } = useNotificationStore();
-
-  // Hydrate auth on mount
-  useEffect(() => { hydrate(); }, [hydrate]);
-
-  // Sync dark mode class on <html>
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
-
-  // Poll unread count every 60s (fallback when socket is offline)
-  useEffect(() => {
-    if (!user) return;
-    fetchUnreadCount();
-    const id = setInterval(fetchUnreadCount, 60_000);
-    return () => clearInterval(id);
-  }, [user, fetchUnreadCount]);
+function App() {
+  const [name, setName] = useState("")
+  const [darkMode, setDarkMode] = useState(false)
 
   return (
-    <ErrorBoundary>
-      <SocketProvider />
-      <ScrollToTop />
-      <Suspense fallback={<PageLoader />}>
-        <AppRouter />
-      </Suspense>
-    </ErrorBoundary>
-  );
+    <div className={`min-h-screen flex items-center justify-center p-6 ${darkMode ? "dark bg-gray-900" : "bg-gray-100"}`}>
+      
+      <Card className="w-full max-w-md shadow-xl">
+        
+        <CardHeader>
+          <CardTitle className="text-center text-2xl">
+            🚀 Demo App
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+
+          {/* Input */}
+          <Input
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          {/* Button */}
+          <Button className="w-full">
+            Submit
+          </Button>
+
+          {/* Badge */}
+          <div className="text-center">
+            <Badge variant="secondary">
+              {name ? `Hello, ${name}` : "No name entered"}
+            </Badge>
+          </div>
+
+          {/* Switch */}
+          <div className="flex items-center justify-between">
+            <span>Dark Mode</span>
+            <Switch checked={darkMode} onCheckedChange={setDarkMode} />
+          </div>
+
+          {/* Dialog */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="w-full">
+                Open Modal
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Welcome 🎉</DialogTitle>
+              </DialogHeader>
+              <p className="text-sm text-gray-500">
+                This is a demo modal using shadcn/ui.
+              </p>
+            </DialogContent>
+          </Dialog>
+
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
+
+export default App

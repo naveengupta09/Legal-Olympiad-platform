@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Scale, Globe, Linkedin, Instagram, Mail } from "lucide-react";
+import { Scale, Twitter, Linkedin, Instagram, Mail } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const LINKS = {
@@ -22,9 +22,9 @@ const LINKS = {
 };
 
 const SOCIALS = [
-  { icon: Globe,     href: "https://naveengupta.netlify.app/" },
-  { icon: Linkedin,  href: "https://www.linkedin.com/in/naveengupta13/" },
-  { icon: Instagram, href: "https://www.instagram.com/im.naveengupta?igsh=NjRoNGx4aGtnb2Ix" },
+  { icon: Twitter,   href: "#" },
+  { icon: Linkedin,  href: "#" },
+  { icon: Instagram, href: "#" },
   { icon: Mail,      href: "mailto:hello@legalolympiad.com" },
 ];
 
@@ -52,12 +52,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
-            <div className="text-sm text-muted-foreground mt-2">
-              <a href="mailto:naveenkumar54111@gmail.com" className="hover:text-foreground">naveenkumar54111@gmail.com</a>
-              <span className="mx-2">|</span>
-              <a href="mailto:hello@legalolympiad.com" className="hover:text-foreground">hello@legalolympiad.com</a>
-            </div>
-            </div>
+          </div>
 
           {/* Link groups */}
           {Object.entries(LINKS).map(([group, items]) => (

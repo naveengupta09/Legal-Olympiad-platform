@@ -7,7 +7,6 @@ import HomePage from "@/pages/HomePage";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
-import OAuthCallbackPage from "@/pages/auth/OAuthCallbackPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import ProfilePage from "@/pages/dashboard/ProfilePage";
 import CompetitionsPage from "@/pages/competitions/CompetitionsPage";
@@ -48,16 +47,11 @@ export default function AppRouter() {
         <Route path="dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
         <Route path="profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       </Route>
-
       <Route element={<AuthLayout />}>
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
       </Route>
-
-      {/* OAuth callback — no layout */}
-      <Route path="oauth/callback" element={<OAuthCallbackPage />} />
-
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
