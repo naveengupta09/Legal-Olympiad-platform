@@ -7,6 +7,7 @@ import HomePage from "@/pages/HomePage";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
+import OAuthCallbackPage from "@/pages/auth/OAuthCallbackPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import ProfilePage from "@/pages/dashboard/ProfilePage";
 import CompetitionsPage from "@/pages/competitions/CompetitionsPage";
@@ -52,6 +53,7 @@ export default function AppRouter() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
       </Route>
+      <Route path="oauth/callback" element={<OAuthCallbackPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
