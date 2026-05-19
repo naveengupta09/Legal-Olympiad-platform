@@ -22,6 +22,8 @@ const schema = z.object({
   bio:   z.string().max(500, "Bio max 500 chars").optional(),
   "socialLinks.linkedin": z.string().url("Invalid URL").optional().or(z.literal("")),
   "socialLinks.twitter":  z.string().url("Invalid URL").optional().or(z.literal("")),
+  "socialLinks.instagram": z.string().url("Invalid URL").optional().or(z.literal("")),
+  "socialLinks.portfolio": z.string().url("Invalid URL").optional().or(z.literal("")),
 });
 
 export default function ProfilePage() {
@@ -38,6 +40,8 @@ export default function ProfilePage() {
       bio:   user?.bio   || "",
       "socialLinks.linkedin": user?.socialLinks?.linkedin || "",
       "socialLinks.twitter":  user?.socialLinks?.twitter  || "",
+      "socialLinks.instagram": user?.socialLinks?.instagram || "",
+      "socialLinks.portfolio": user?.socialLinks?.portfolio || "",
     },
   });
 
@@ -46,7 +50,12 @@ export default function ProfilePage() {
     try {
       const res = await userApi.updateProfile({
         name: data.name, phone: data.phone, bio: data.bio,
-        socialLinks: { linkedin: data["socialLinks.linkedin"], twitter: data["socialLinks.twitter"] },
+        socialLinks: {
+          linkedin: data["socialLinks.linkedin"],
+          twitter: data["socialLinks.twitter"],
+          instagram: data["socialLinks.instagram"],
+          portfolio: data["socialLinks.portfolio"],
+        },
       });
       updateUser(res.data);
       toast.success("Profile updated!");
@@ -146,6 +155,14 @@ export default function ProfilePage() {
                       <Label>LinkedIn URL</Label>
                       <Input {...register("socialLinks.linkedin")} placeholder="https://linkedin.com/in/..." />
                       {errors["socialLinks.linkedin"] && <p className="text-xs text-destructive">{errors["socialLinks.linkedin"].message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Instagram URL</Label>
+                      <Input {...register("socialLinks.instagram")} placeholder="https://instagram.com/..." />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Portfolio URL</Label>
+                      <Input {...register("socialLinks.portfolio")} placeholder="https://your-site.com" />
                     </div>
                     <div className="space-y-2">
                       <Label>Twitter URL</Label>

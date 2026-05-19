@@ -133,6 +133,14 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 JWT_SECRET=your_access_token_secret
 JWT_REFRESH_SECRET=your_refresh_token_secret
 JWT_EXPIRES_IN=7d
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/v1/auth/google/callback
+
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+GITHUB_CALLBACK_URL=http://localhost:5000/api/v1/auth/github/callback
 ```
 
 ### Frontend `.env`
@@ -256,6 +264,7 @@ This makes it easier for the frontend to show meaningful form and API errors.
 
 - If the frontend cannot reach the API, confirm `VITE_API_URL` and `CLIENT_URL` are aligned with the ports you are using.
 - If login or registration fails, verify that the backend `.env` file includes JWT, MongoDB, Redis, Brevo, and Cloudinary values.
+- If you want Google or GitHub sign-in, add the OAuth client ID, secret, and callback URL values shown above. The callback URLs must match the provider console exactly.
 - If rankings or dashboard data are empty, it may simply mean the current user does not yet have a ranking document.
 - If a port is already in use, stop the process currently bound to that port or change the `PORT` value in the backend `.env` file.
 

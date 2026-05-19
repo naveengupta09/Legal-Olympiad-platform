@@ -22,6 +22,14 @@ const updateProfileValidator = [
   body("socialLinks.twitter")
     .optional()
     .isURL().withMessage("Twitter must be a valid URL"),
+
+  body("socialLinks.instagram")
+    .optional()
+    .isURL().withMessage("Instagram must be a valid URL"),
+
+  body("socialLinks.portfolio")
+    .optional()
+    .isURL().withMessage("Portfolio must be a valid URL"),
 ];
 
 module.exports = { updateProfileValidator };

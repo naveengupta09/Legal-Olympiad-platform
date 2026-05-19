@@ -3,16 +3,18 @@ const User = require("../models/User.model");
 const ApiError = require("../utils/ApiError");
 const paginate = require("../utils/paginate");
 const uploadService = require("./upload.service");
+const { ROLES } = require("../config/constants");
 
 const createCollege = async (data, adminId) => {
-  const exists = await College.findOne({ name: data.name });
+  const name = (data.name || "").trim();
+  const exists = await College.findOne({ name: { $regex: `^${name}$`, $options: "i" } });
   if (exists) throw new ApiError(409, "College already registered");
 
-  const college = await College.create({ ...data, admin: adminId });
+  const college = await College.create({ ...data, name, admin: adminId });
 
   await User.findByIdAndUpdate(adminId, {
     college: college._id,
-    role: "college_admin",
+    role: ROLES.COLLEGE_ADMIN,
   });
 
   return college;
@@ -22,83 +24,110 @@ const getCollegeById = async (collegeId) => {
   const college = await College.findById(collegeId)
     .populate("admin", "name email avatar")
     .populate("affiliatedStudents", "name avatar totalScore rank");
+
   if (!college) throw new ApiError(404, "College not found");
   return college;
 };
 
-const updateCollege = async (collegeId, updateData, requesterId) => {
-  const college = await College.findById(collegeId);
-  if (!college) throw new ApiError(404, "College not found");
-
-  const requester = await User.findById(requesterId);
-  const isAdmin = requester.role === "platform_admin";
-  const isCollegeAdmin = college.admin.toString() === requesterId.toString();
-
-  if (!isAdmin && !isCollegeAdmin) {
-    throw new ApiError(403, "Not authorized to update this college");
-  }
-
-  const allowed = ["description", "website", "email", "phone", "location"];
-  const filtered = {};
-  for (const key of allowed) {
-    if (updateData[key] !== undefined) filtered[key] = updateData[key];
-  }
-
-  return College.findByIdAndUpdate(collegeId, filtered, { new: true, runValidators: true });
-};
-
-const updateCollegeLogo = async (collegeId, file) => {
-  const url = await uploadService.uploadImage(file, "colleges");
-  return College.findByIdAndUpdate(collegeId, { logo: url }, { new: true });
-};
-
 const getAllColleges = async (queryParams) => {
-  const { page, limit, search, sort, verified } = queryParams;
+  const { page, limit, search, sort } = queryParams;
 
   const query = { isActive: true };
-  if (search) query.name = { $regex: search, $options: "i" };
-  if (verified !== undefined) query.isVerified = verified === "true";
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { "location.city": { $regex: search, $options: "i" } },
+      { "location.state": { $regex: search, $options: "i" } },
+    ];
+  }
 
   const sortOption =
     sort === "rank" ? { rank: 1 } :
     sort === "score" ? { totalScore: -1 } :
-    sort === "students" ? { "stats.totalStudents": -1 } :
     { createdAt: -1 };
 
   return paginate(College, query, {
     page,
     limit,
     sort: sortOption,
-    select: "name slug logo location totalScore rank stats isVerified",
+    populate: [{ path: "admin", select: "name email avatar" }],
   });
+};
+
+const updateCollege = async (collegeId, updateData, requesterId) => {
+  const college = await College.findById(collegeId);
+  if (!college) throw new ApiError(404, "College not found");
+
+  const requester = await User.findById(requesterId).select("role");
+  const isOwner = college.admin && college.admin.toString() === requesterId.toString();
+  const isPlatformAdmin = requester?.role === ROLES.PLATFORM_ADMIN;
+
+  if (!isOwner && !isPlatformAdmin) {
+    throw new ApiError(403, "You are not allowed to update this college");
+  }
+
+  Object.assign(college, updateData);
+  await college.save();
+
+  return college
+    .populate("admin", "name email avatar")
+    .populate("affiliatedStudents", "name avatar totalScore rank");
+};
+
+const updateCollegeLogo = async (collegeId, file) => {
+  const college = await College.findById(collegeId);
+  if (!college) throw new ApiError(404, "College not found");
+
+  const url = await uploadService.uploadImage(file, "colleges");
+  college.logo = url;
+  await college.save();
+
+  return college;
 };
 
 const addStudentToCollege = async (collegeId, studentId) => {
   const college = await College.findById(collegeId);
   if (!college) throw new ApiError(404, "College not found");
 
-  if (college.affiliatedStudents.includes(studentId)) {
-    throw new ApiError(409, "Student already affiliated with this college");
+  const student = await User.findById(studentId);
+  if (!student) throw new ApiError(404, "Student not found");
+
+  if (!college.affiliatedStudents.some((id) => id.toString() === studentId.toString())) {
+    college.affiliatedStudents.push(studentId);
   }
 
-  college.affiliatedStudents.push(studentId);
-  college.stats.totalStudents = college.affiliatedStudents.length;
-  await college.save();
+  student.college = college._id;
+  if (!student.role || student.role === ROLES.STUDENT) {
+    student.role = ROLES.COLLEGE_ADMIN;
+  }
 
-  await User.findByIdAndUpdate(studentId, { college: collegeId });
-  return college;
+  await college.save();
+  await student.save({ validateBeforeSave: false });
+
+  return college
+    .populate("admin", "name email avatar")
+    .populate("affiliatedStudents", "name avatar totalScore rank");
 };
 
 const verifyCollege = async (collegeId) => {
-  return College.findByIdAndUpdate(collegeId, { isVerified: true }, { new: true });
+  const college = await College.findByIdAndUpdate(
+    collegeId,
+    { isVerified: true },
+    { new: true }
+  )
+    .populate("admin", "name email avatar")
+    .populate("affiliatedStudents", "name avatar totalScore rank");
+
+  if (!college) throw new ApiError(404, "College not found");
+  return college;
 };
 
 module.exports = {
   createCollege,
   getCollegeById,
+  getAllColleges,
   updateCollege,
   updateCollegeLogo,
-  getAllColleges,
   addStudentToCollege,
   verifyCollege,
 };
