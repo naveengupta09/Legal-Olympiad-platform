@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { BookOpen, Clock, Search, Heart, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -68,11 +68,17 @@ function ContentCard({ post, featured = false }) {
 }
 
 export default function BlogsPage() {
-  const [type, setType] = useState("");
+  const [searchParams] = useSearchParams();
+  const [type, setType] = useState(searchParams.get("type") || "");
   const [sort, setSort] = useState("latest");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const debounced = useDebounce(search, 400);
+
+  useEffect(() => {
+    const t = searchParams.get("type");
+    if (t) setType(t);
+  }, [searchParams]);
 
   const { data, isLoading } = useContentList({ type: type || undefined, sort, search: debounced || undefined, page, limit: 9 });
   const posts = data?.data || [];

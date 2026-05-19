@@ -10,6 +10,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useCompetition, useRegisterCompetition } from "@/hooks/useCompetitions";
 import { useAuthStore } from "@/store/authStore";
 import { formatDate, formatScore } from "@/utils/formatDate";
+import { QueryError, InlineLoader } from "@/components/QueryState";
 
 const STATUS_COLORS = {
   upcoming: "secondary", registration_open: "success",
@@ -18,7 +19,7 @@ const STATUS_COLORS = {
 
 export default function CompetitionDetailPage() {
   const { id } = useParams();
-  const { data: comp, isLoading } = useCompetition(id);
+  const { data: comp, isLoading, isError, refetch } = useCompetition(id);
   const { mutate: register, isPending } = useRegisterCompetition();
   const { user, isLoggedIn } = useAuthStore();
 

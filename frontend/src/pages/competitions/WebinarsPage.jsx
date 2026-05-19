@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWebinars } from "@/hooks/useWebinars";
-import { formatDate, formatDuration } from "@/utils/formatDate";
+import { formatDate, formatDurationMinutes } from "@/utils/formatDate";
 
 export default function WebinarsPage() {
   const [status, setStatus] = useState("");
@@ -56,7 +56,7 @@ export default function WebinarsPage() {
                   <h3 className="font-display font-semibold text-lg leading-snug line-clamp-2 group-hover:text-primary transition-colors">{w.title}</h3>
                   <div className="space-y-1.5 text-xs text-muted-foreground">
                     <p className="flex items-center gap-1.5"><Calendar className="w-3 h-3" />{formatDate(w.scheduledAt)}</p>
-                    <p className="flex items-center gap-1.5"><Clock className="w-3 h-3" />{formatDuration(w.durationMinutes)}</p>
+                    <p className="flex items-center gap-1.5"><Clock className="w-3 h-3" />{formatDurationMinutes(w.durationMinutes)}</p>
                     {w.host && (
                       <div className="flex items-center gap-1.5">
                         <Avatar className="w-4 h-4"><AvatarImage src={w.host.avatar} /><AvatarFallback className="text-[8px]">{w.host.name?.[0]}</AvatarFallback></Avatar>

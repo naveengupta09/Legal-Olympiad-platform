@@ -25,3 +25,9 @@ export function formatDuration(seconds) {
   const s = String(d.seconds || 0).padStart(2, "0");
   return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
 }
+
+/** Format when value is stored in minutes (webinars, etc.) */
+export function formatDurationMinutes(minutes) {
+  if (!minutes) return "0:00";
+  return formatDuration(Math.round(Number(minutes) * 60));
+}

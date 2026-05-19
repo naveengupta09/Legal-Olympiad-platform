@@ -48,14 +48,17 @@ const issueTokens = async (user, req) => {
 //  - Student: creates user only
 //  - College Admin: creates user + college atomically (rollback on failure)
 // ─────────────────────────────────────────────────────────────────────────────
+const ALLOWED_REGISTER_ROLES = ["student", "college_admin"];
+
 const register = async ({ name, email, password, role, college: collegePayload }, req) => {
+  const safeRole = ALLOWED_REGISTER_ROLES.includes(role) ? role : "student";
 
   // 1. Duplicate email check
   const existing = await User.findOne({ email: email.toLowerCase().trim() });
   if (existing) throw new ApiError(409, "An account with this email already exists");
 
   // 2. College-admin: validate college before creating user
-  if (role === "college_admin") {
+  if (safeRole === "college_admin") {
     if (!collegePayload || !collegePayload.name?.trim()) {
       throw new ApiError(400, "College name is required for College Admin accounts");
     }
@@ -76,12 +79,12 @@ const register = async ({ name, email, password, role, college: collegePayload }
     name:                   name.trim(),
     email:                  email.toLowerCase().trim(),
     password,
-    role:                   role || "student",
+    role:                   safeRole,
     emailVerificationToken: hashToken,
   });
 
   // 5. College admin: create college and link it
-  if (role === "college_admin" && collegePayload) {
+  if (safeRole === "college_admin" && collegePayload) {
     let college;
     try {
       college = await College.create({
@@ -208,14 +211,21 @@ const verifyEmail = async (token) => {
 // ── Forgot / reset password ────────────────────────────────────────────────────
 const forgotPassword = async (email) => {
   const user = await User.findOne({ email: email.toLowerCase().trim() });
-  if (!user) throw new ApiError(404, "No account found with that email");
+  if (!user) return true;
 
   const rawToken  = crypto.randomBytes(32).toString("hex");
   user.passwordResetToken   = crypto.createHash("sha256").update(rawToken).digest("hex");
-  user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+  user.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   await user.save({ validateBeforeSave: false });
 
-  await emailService.sendPasswordResetEmail(user.email, user.name, rawToken);
+  try {
+    await emailService.sendPasswordResetEmail(user.email, user.name, rawToken);
+  } catch (err) {
+    user.passwordResetToken   = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    throw new ApiError(503, "Unable to send reset email. Please try again later.");
+  }
   return true;
 };
 

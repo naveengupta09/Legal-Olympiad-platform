@@ -7,3 +7,10 @@ export const usePodcasts = (params = {}) =>
     queryKey: [...QUERY_KEYS.PODCASTS, params],
     queryFn: () => podcastApi.getAll(params).then((r) => r.data.data),
   });
+
+export const usePodcast = (id) =>
+  useQuery({
+    queryKey: [...QUERY_KEYS.PODCASTS, id],
+    queryFn: () => podcastApi.getById(id).then((r) => r.data.data),
+    enabled: !!id,
+  });

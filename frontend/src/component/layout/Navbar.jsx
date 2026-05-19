@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/competitions", label: "Competitions" },
   { to: "/rankings",     label: "Rankings" },
+  { to: "/colleges",     label: "Colleges" },
   { to: "/webinars",     label: "Webinars" },
   { to: "/courses",      label: "Courses" },
   { to: "/podcasts",     label: "Podcasts" },

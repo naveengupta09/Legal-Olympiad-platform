@@ -12,14 +12,19 @@ const { ENV } = require("./config/env");
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 app.use(helmet());
 app.use(cookieParser());
-app.use(cors({ origin: [
-  ENV.CLIENT_URL, 
+const corsOrigins = [
+  ENV.CLIENT_URL,
   "https://legal-olympiad.vercel.app",
+  "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
-], credentials: true }));
+].filter(Boolean);
+
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());

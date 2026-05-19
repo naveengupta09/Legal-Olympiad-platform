@@ -43,9 +43,10 @@ function LeaderboardRow({ entry, rank, isCollege }) {
   const rankColors = { 1: "rank-1", 2: "rank-2", 3: "rank-3" };
   const entity = isCollege ? entry.entity : entry.entity;
   if (!entity) return null;
-  const to = isCollege ? `/colleges/${entity._id}` : `/profile/${entity._id}`;
+  const to = isCollege ? `/colleges/${entity._id}` : null;
+  const Row = to ? Link : "div";
   return (
-    <Link to={to} className="flex items-center gap-4 px-6 py-4 hover:bg-muted/50 transition-colors group border-b border-border last:border-0">
+    <Row {...(to ? { to } : {})} className="flex items-center gap-4 px-6 py-4 hover:bg-muted/50 transition-colors group border-b border-border last:border-0">
       <span className={cn("w-10 text-center font-bold font-mono text-sm shrink-0", rankColors[rank] || "text-muted-foreground")}>
         {getRankLabel(rank)}
       </span>
@@ -76,7 +77,7 @@ function LeaderboardRow({ entry, rank, isCollege }) {
           {entry.rank < entry.previousRank ? "↑" : "↓"}{Math.abs(entry.rank - entry.previousRank)}
         </div>
       )}
-    </Link>
+    </Row>
   );
 }
 

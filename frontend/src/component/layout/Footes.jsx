@@ -15,9 +15,7 @@ const LINKS = {
     { to: "/colleges", label: "Colleges" },
   ],
   Legal: [
-    { to: "/privacy",  label: "Privacy Policy" },
-    { to: "/terms",    label: "Terms of Service" },
-    { to: "/contact",  label: "Contact Us" },
+    { to: "mailto:hello@legalolympiad.com", label: "Contact Us", external: true },
   ],
 };
 
@@ -59,11 +57,17 @@ export default function Footer() {
             <div key={group} className="space-y-4">
               <h4 className="text-sm font-semibold text-foreground">{group}</h4>
               <ul className="space-y-2.5">
-                {items.map(({ to, label }) => (
+                {items.map(({ to, label, external }) => (
                   <li key={to}>
-                    <Link to={to} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                      {label}
-                    </Link>
+                    {external ? (
+                      <a href={to} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {label}
+                      </a>
+                    ) : (
+                      <Link to={to} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

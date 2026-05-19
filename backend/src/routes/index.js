@@ -15,6 +15,8 @@ router.use("/courses",      require("./course.routes"));
 router.use("/podcasts",     require("./podcast.routes"));
 router.use("/notifications",require("./notification.routes"));
 router.use("/homepage",     require("./homepage.routes"));
+router.use("/search",       require("./search.routes"));
+router.use("/quizzes",      require("./quiz.routes"));
 
 router.get("/health", (req, res) => {
   res.json({ success: true, message: "Legal Olympiad API is running", timestamp: new Date() });

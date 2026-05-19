@@ -136,7 +136,7 @@ const oauthCallback = (provider) =>
     const { user, accessToken, refreshToken } = await authService.oauthLogin(req.user, req);
     res.cookie("refreshToken", refreshToken, cookieOptions);
     res.redirect(
-      `${process.env.CLIENT_URL}/oauth/callback?token=${accessToken}&provider=${provider}`
+      `${process.env.CLIENT_URL}/oauth/callback#token=${accessToken}&provider=${provider}`
     );
   });
 

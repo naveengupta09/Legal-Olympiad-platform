@@ -19,6 +19,12 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("accessToken");
+      if (!window.location.pathname.startsWith("/login")) {
+        window.location.href = "/login?session=expired";
+      }
+    }
     const message =
       error.response?.data?.message ||
       error.message ||

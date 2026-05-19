@@ -23,7 +23,7 @@ const updateCollege = asyncHandler(async (req, res) => {
 });
 
 const updateCollegeLogo = asyncHandler(async (req, res) => {
-  const college = await collegeService.updateCollegeLogo(req.params.id, req.file);
+  const college = await collegeService.updateCollegeLogo(req.params.id, req.file, req.user._id);
   res.json(new ApiResponse(200, college, "Logo updated"));
 });
 

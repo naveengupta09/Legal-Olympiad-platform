@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useHomepageFeed } from "@/hooks/useHomepage";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, formatRelative, formatDuration } from "@/utils/formatDate";
+import { formatDate, formatRelative, formatDuration, formatDurationMinutes } from "@/utils/formatDate";
 import { formatScore, getRankLabel } from "@/utils/formatScore";
 import { cn } from "@/lib/utils";
 
@@ -209,7 +209,7 @@ function WebinarCard({ webinar }) {
           </div>
         </div>
         <div className="space-y-1.5 text-xs text-muted-foreground">
-          <p className="flex items-center gap-1.5"><Clock className="w-3 h-3" />{formatDate(webinar.scheduledAt)} · {formatDuration(webinar.durationMinutes)}</p>
+          <p className="flex items-center gap-1.5"><Clock className="w-3 h-3" />{formatDate(webinar.scheduledAt)} · {formatDurationMinutes(webinar.durationMinutes)}</p>
           {webinar.host && (
             <p className="flex items-center gap-1.5">
               <Avatar className="w-4 h-4"><AvatarImage src={webinar.host.avatar} /><AvatarFallback className="text-[8px]">{webinar.host.name?.[0]}</AvatarFallback></Avatar>
@@ -240,7 +240,7 @@ function PodcastCard({ podcast }) {
           <div className="min-w-0 flex-1 space-y-1">
             <p className="text-xs text-muted-foreground">EP {podcast.episodeNumber}</p>
             <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">{podcast.title}</h3>
-            <p className="text-xs text-muted-foreground">{formatDuration(Math.floor(podcast.duration / 60))}</p>
+            <p className="text-xs text-muted-foreground">{formatDuration(podcast.duration)}</p>
           </div>
         </CardContent>
       </Card>

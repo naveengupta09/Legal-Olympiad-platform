@@ -48,7 +48,14 @@ const getAllContent = async (queryParams) => {
   if (type) query.type = type;
   if (tag) query.tags = tag;
   if (featured === "true") query.isFeatured = true;
-  if (search) query.$text = { $search: search };
+  if (search) {
+    const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    query.$or = [
+      { title: { $regex: escaped, $options: "i" } },
+      { excerpt: { $regex: escaped, $options: "i" } },
+      { tags: { $regex: escaped, $options: "i" } },
+    ];
+  }
 
   const sortOption =
     sort === "popular" ? { views: -1 } :

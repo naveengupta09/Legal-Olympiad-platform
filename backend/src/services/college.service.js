@@ -74,9 +74,16 @@ const updateCollege = async (collegeId, updateData, requesterId) => {
     .populate("affiliatedStudents", "name avatar totalScore rank");
 };
 
-const updateCollegeLogo = async (collegeId, file) => {
+const updateCollegeLogo = async (collegeId, file, requesterId) => {
   const college = await College.findById(collegeId);
   if (!college) throw new ApiError(404, "College not found");
+
+  const requester = await User.findById(requesterId).select("role");
+  const isOwner = college.admin && college.admin.toString() === requesterId.toString();
+  const isPlatformAdmin = requester?.role === ROLES.PLATFORM_ADMIN;
+  if (!isOwner && !isPlatformAdmin) {
+    throw new ApiError(403, "You are not allowed to update this college logo");
+  }
 
   const url = await uploadService.uploadImage(file, "colleges");
   college.logo = url;
@@ -97,9 +104,7 @@ const addStudentToCollege = async (collegeId, studentId) => {
   }
 
   student.college = college._id;
-  if (!student.role || student.role === ROLES.STUDENT) {
-    student.role = ROLES.COLLEGE_ADMIN;
-  }
+  if (!student.role) student.role = ROLES.STUDENT;
 
   await college.save();
   await student.save({ validateBeforeSave: false });

@@ -7,3 +7,10 @@ export const useColleges = (params = {}) =>
     queryKey: [...QUERY_KEYS.COLLEGES, params],
     queryFn: () => collegeApi.getAll(params).then((r) => r.data.data),
   });
+
+export const useCollege = (id) =>
+  useQuery({
+    queryKey: [...QUERY_KEYS.COLLEGES, id],
+    queryFn: () => collegeApi.getById(id).then((r) => r.data.data),
+    enabled: !!id,
+  });

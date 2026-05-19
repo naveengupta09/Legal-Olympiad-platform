@@ -10,11 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePodcasts } from "@/hooks/usePodcasts";
 import { useDebounce } from "@/hooks/useDebounce";
 import { formatDuration } from "@/utils/formatDate";
+import { QueryError } from "@/components/QueryState";
 
 export default function PodcastsPage() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 400);
-  const { data, isLoading } = usePodcasts({ search: debouncedSearch || undefined, limit: 12 });
+  const { data, isLoading, isError, refetch } = usePodcasts({ search: debouncedSearch || undefined, limit: 12 });
   const podcasts = data?.data || [];
 
   return (
@@ -30,7 +31,9 @@ export default function PodcastsPage() {
         <Input placeholder="Search episodes…" className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
       </div>
 
-      {isLoading ? (
+      {isError ? (
+        <QueryError onRetry={refetch} />
+      ) : isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {Array.from({length:6}).map((_,i) => <Card key={i} className="p-4"><Skeleton className="h-20 w-full" /></Card>)}
         </div>
@@ -63,7 +66,7 @@ export default function PodcastsPage() {
                           {pod.host.name}
                         </span>
                       )}
-                      <span>{formatDuration(Math.floor(pod.duration / 60))}</span>
+                      <span>{formatDuration(pod.duration)}</span>
                       <span>{pod.plays?.toLocaleString()} plays</span>
                     </div>
                   </div>

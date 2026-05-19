@@ -8,11 +8,12 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWebinar, useRegisterWebinar } from "@/hooks/useWebinars";
 import { useAuthStore } from "@/store/authStore";
-import { formatDate, formatDateTime, formatDuration } from "@/utils/formatDate";
+import { formatDate, formatDateTime, formatDurationMinutes } from "@/utils/formatDate";
+import { QueryError, InlineLoader } from "@/components/QueryState";
 
 export default function WebinarDetailPage() {
   const { id } = useParams();
-  const { data: w, isLoading } = useWebinar(id);
+  const { data: w, isLoading, isError, refetch } = useWebinar(id);
   const { mutate: register, isPending } = useRegisterWebinar();
   const { user, isLoggedIn } = useAuthStore();
 
@@ -75,7 +76,7 @@ export default function WebinarDetailPage() {
             <div className="space-y-3 text-sm">
               {[
                 { icon: Calendar, label: "Date & time", value: formatDateTime(w.scheduledAt) },
-                { icon: Clock,    label: "Duration",    value: formatDuration(w.durationMinutes) },
+                { icon: Clock,    label: "Duration",    value: formatDurationMinutes(w.durationMinutes) },
                 { icon: Users,    label: "Registered",  value: `${w.registrations?.length || 0} attendees` },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-start gap-3">

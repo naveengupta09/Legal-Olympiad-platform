@@ -6,7 +6,7 @@ const { authorize } = require("../middleware/role.middleware");
 const { imageUpload } = require("../middleware/upload.middleware");
 
 router.get("/",    ctrl.getAllColleges);
-router.post("/",   protect, ctrl.createCollege);
+router.post("/",   protect, authorize("platform_admin"), ctrl.createCollege);
 router.get("/:id", ctrl.getCollegeById);
 router.patch("/:id",           protect, ctrl.updateCollege);
 router.patch("/:id/logo",      protect, imageUpload.single("logo"), ctrl.updateCollegeLogo);

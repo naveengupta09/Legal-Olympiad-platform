@@ -25,6 +25,8 @@ const badgeVariants = cva(
           "bg-amber-500/10 text-amber-700 dark:text-amber-400 [a]:hover:bg-amber-500/20",
         gold:
           "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/30",
+        live:
+          "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/30 animate-pulse",
       },
     },
     defaultVariants: {

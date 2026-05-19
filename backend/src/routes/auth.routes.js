@@ -4,6 +4,14 @@ const passport = require("../config/passport");
 const ctrl = require("../controllers/auth.controller");
 const { protect } = require("../middleware/auth.middleware");
 const { authLimiter } = require("../middleware/rateLimit.middleware");
+const { validate } = require("../middleware/validate.middleware");
+const {
+  registerValidator,
+  loginValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
+  changePasswordValidator,
+} = require("../validators/auth.validator");
 const { ENV } = require("../config/env");
 
 const googleOAuthConfigured =
@@ -16,14 +24,14 @@ const githubOAuthConfigured =
 	process.env.GITHUB_CLIENT_SECRET &&
 	process.env.GITHUB_CALLBACK_URL;
 
-router.post("/register", authLimiter, ctrl.register);
-router.post("/login",    authLimiter, ctrl.login);
+router.post("/register", authLimiter, registerValidator, validate, ctrl.register);
+router.post("/login",    authLimiter, loginValidator, validate, ctrl.login);
 router.post("/logout",   protect,     ctrl.logout);
 router.get ("/me",       protect,     ctrl.getMe);
 router.get ("/verify-email",          ctrl.verifyEmail);
-router.post("/forgot-password",       ctrl.forgotPassword);
-router.post("/reset-password",        ctrl.resetPassword);
-router.patch("/change-password", protect, ctrl.changePassword);
+router.post("/forgot-password", authLimiter, forgotPasswordValidator, validate, ctrl.forgotPassword);
+router.post("/reset-password", authLimiter, resetPasswordValidator, validate, ctrl.resetPassword);
+router.patch("/change-password", protect, changePasswordValidator, validate, ctrl.changePassword);
 
 if (googleOAuthConfigured) {
 	router.get(
